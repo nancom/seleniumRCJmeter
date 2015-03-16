@@ -1,9 +1,14 @@
 package com.company.selenium_jmeter.example;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import com.jmeter.MethodsForTestsAbstract;
+import junit.framework.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * JMeter doesn't support @Rule, so taking test result and name needs to be done the "dirty" way, for taking screenshot on fail.
@@ -12,7 +17,7 @@ import org.openqa.selenium.By;
  */
 
 public class TseTest extends MethodsForTestsAbstract {
-
+    private static Logger LOGGER = LoggerFactory.getLogger(TseTest.class);
 	/**
 	 * Test that should fail
 	 */
@@ -21,9 +26,10 @@ public class TseTest extends MethodsForTestsAbstract {
 		testName = getMethodName();
 
 		driver.get("http://www.useragentstring.com/");
-		assertTrue(driver.findElement(By.id("uas_textfeld")).getText().isEmpty());
-
-		testResult = true;
+        LOGGER.debug("Text Present : {}",phantomWebDriver.waitForElementPresentById("uas_textfeld"));
+        LOGGER.debug("Text : {}", phantomWebDriver.getValueById("uas_textfeld"));
+        assertFalse(phantomWebDriver.getValueById("uas_textfeld").isEmpty());
+        testResult = true;
 	}
 
 	/**
@@ -34,8 +40,10 @@ public class TseTest extends MethodsForTestsAbstract {
 		testName = getMethodName();
 
 		driver.get("http://www.useragentstring.com/");
-		assertTrue(!driver.findElement(By.id("uas_textfeld")).getText().isEmpty());
-
+        LOGGER.debug("Text Present : {}",phantomWebDriver.waitForElementPresentById("uas_textfeld"));
+        LOGGER.debug("Text : {}", phantomWebDriver.getValueById("uas_textfeld"));
+        phantomWebDriver.waitForElementPresentById("uas_textfeld");
+        assertTrue(!phantomWebDriver.getValueById("uas_textfeld").isEmpty());
 		testResult = true;
 	}
 }
