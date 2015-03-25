@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
+import com.spt.selenium.PhantomUtil;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -31,11 +32,12 @@ public class MethodsForTestsAbstract {
     protected String testName = "no_name";
 
     protected PhantomWebDriver phantomWebDriver;
+    private static final String FILE_SEPARATE = System.getProperty("file.separator");
 
     private static final String user_agent = getProperty("user_agent","Mozilla/5.0 (Windows; U; MSIE 9.0; WIndows NT 9.0; en-US))");
     private static final String selenium_server = getProperty("selenium_server", "http://localhost:4444/wd/hub");
-    private static final String screnshot_folder = getProperty("screnshot_folder","target/surefire-reports/screenshots/");
-    private static final File phantomjs_exe_file = getPhantomJs();
+    private static final String screnshot_folder = getProperty("screnshot_folder","target"+FILE_SEPARATE+"surefire-reports"+FILE_SEPARATE+"screenshots"+FILE_SEPARATE);
+    private static final File phantomjs_exe_file = PhantomUtil.getPhantomJs();
 
 
     /**
@@ -60,38 +62,6 @@ public class MethodsForTestsAbstract {
         return out.equals("empty") ? "" : out;
     }
 
-    /**
-     * Will copy phantomjs.exe or phantomjs from resources to temp.
-     *
-     * @return
-     */
-    public static File getPhantomJs() {
-        /* Fix for OSX test */
-        InputStream input = MethodsForTestsAbstract.class.getResourceAsStream("/phantomjs2_osx/phantomjs");
-        OutputStream output;
-        /* Fix for OSX test */
-        File phantomjs_exe = new File("/tmp/phantomjs");
-        try {
-            output = new FileOutputStream(phantomjs_exe);
-            int read = 0;
-            byte[] bytes = new byte[1024];
-            while ((read = input.read(bytes)) != -1) {
-                output.write(bytes, 0, read);
-            }
-            input.close();
-            output.close();
-
-            phantomjs_exe.setReadable(true, false);
-            phantomjs_exe.setExecutable(true, false);
-            phantomjs_exe.setWritable(true, false);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return phantomjs_exe;
-    }
 
     /**
      * Checks whether phantomjs.exe file exists. Will be done before each class.
